@@ -23,6 +23,10 @@ from flask import (
     make_response,
     render_template_string,
     request,
+    session,
+    redirect,
+    url_for,
+    send_from_directory,
 )
 from werkzeug.datastructures import Authorization
 
@@ -549,6 +553,143 @@ def authenticate_request_basic_auth() -> Union[Authorization, Response]:
     else:
         # let user attempt login again
         return make_basic_auth_response()
+
+
+def custom_login():
+    error = None
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if not store.authenticate_user(username, password):
+            error = 'Invalid username or password.'
+            flash(error)
+            return redirect('/login')
+        # On success, set session and redirect (implement your logic here)
+        session['username'] = username
+        return redirect('/')
+    return render_template_string(
+        r"""
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>MLflow Login</title>
+  <style>
+    body {
+      background: #f4f6fb;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .login-container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1.5px 4px rgba(0,0,0,0.04);
+      padding: 40px 32px 32px 32px;
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .login-logo {
+      width: 120px;
+      margin-bottom: 24px;
+    }
+    .login-title {
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .login-form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .login-form label {
+      font-size: 1rem;
+      color: #444;
+      margin-bottom: 4px;
+    }
+    .login-form input {
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 1rem;
+      background: #f9fafb;
+      transition: border 0.2s;
+    }
+    .login-form input:focus {
+      border: 1.5px solid #2272b4;
+      outline: none;
+      background: #fff;
+    }
+    .login-form button {
+      background: linear-gradient(90deg, #2272b4 0%, #1a5a8a 100%);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 12px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .login-form button:hover {
+      background: linear-gradient(90deg, #1a5a8a 0%, #2272b4 100%);
+    }
+    .login-footer {
+      margin-top: 18px;
+      font-size: 0.95rem;
+      color: #888;
+      text-align: center;
+    }
+    .login-error {
+      color: #c00;
+      background: #ffeaea;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      width: 100%;
+      text-align: center;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class='login-container'>
+    <img src='/assets/variphi-logo.png' alt='Variphi Logo' class='login-logo' />
+    <div class='login-title'>Sign in to MLflow</div>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class='login-error'>{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+    <form class='login-form' method='post'>
+      <label for='username'>Username</label>
+      <input type='text' id='username' name='username' required autofocus autocomplete='username'>
+      <label for='password'>Password</label>
+      <input type='password' id='password' name='password' required autocomplete='current-password'>
+      <button type='submit'>Login</button>
+    </form>
+    <div class='login-footer'>Powered by Variphi MLflow</div>
+  </div>
+</body>
+</html>
+"""
+    )
+
+
+def logout():
+    session.clear()
+    return redirect('/login')
 
 
 def _find_validator(req: Request) -> Optional[Callable[[], bool]]:
@@ -1218,6 +1359,26 @@ def create_app(app: Flask = app):
         rule=DELETE_REGISTERED_MODEL_PERMISSION,
         view_func=delete_registered_model_permission,
         methods=["DELETE"],
+    )
+    app.add_url_rule(
+        rule="/logout",
+        view_func=logout,
+        methods=["GET"],
+    )
+    app.add_url_rule(
+        rule="/login",
+        view_func=custom_login,
+        methods=["GET", "POST"],
+    )
+
+    def serve_variphi_asset(filename):
+        return send_from_directory('mlflow/variphi-mlflow/mlflow/assets', filename)
+
+    app.add_url_rule(
+        rule="/assets/<path:filename>",
+        view_func=serve_variphi_asset,
+        methods=["GET"],
+        endpoint="serve_variphi_asset"
     )
 
     app.before_request(_before_request)
