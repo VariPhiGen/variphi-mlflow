@@ -147,7 +147,7 @@ store = SqlAlchemyStore()
 
 
 def is_unprotected_route(path: str) -> bool:
-    return path.startswith(("/static", "/favicon.ico", "/health"))
+    return path.startswith(("/static", "/favicon.ico", "/health", "/assets"))
 
 
 def make_basic_auth_response() -> Response:
@@ -1388,15 +1388,9 @@ def create_app(app: Flask = app):
         methods=["GET", "POST"],
     )
 
+    @app.route('/assets/<path:filename>')
     def serve_variphi_asset(filename):
         return send_from_directory('mlflow/variphi-mlflow/mlflow/assets', filename)
-
-    app.add_url_rule(
-        rule="/assets/<path:filename>",
-        view_func=serve_variphi_asset,
-        methods=["GET"],
-        endpoint="serve_variphi_asset"
-    )
 
     app.before_request(_before_request)
     app.after_request(_after_request)

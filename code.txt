@@ -9,3 +9,8 @@ yarn build
 cd ..//..//..
 export MLFLOW_FLASK_SERVER_SECRET_KEY='mysecret123'
 mlflow ui --app-name basic-auth --host 0.0.0.0
+
+location /assets/ {
+    alias /home/palash/mlflow/variphi-mlflow/mlflow/assets/;
+    autoindex off;
+}
