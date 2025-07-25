@@ -555,6 +555,17 @@ def authenticate_request_basic_auth() -> Union[Authorization, Response]:
         return make_basic_auth_response()
 
 
+def authenticate_request_ui() -> Union[Authorization, Response, None]:
+    from flask import session, redirect, request
+    if 'username' in session:
+        return Authorization('basic', {'username': session['username'], 'password': ''})
+    else:
+        if request.path == '/login':
+            # Allow the login page to render, do not return anything
+            return None
+        return redirect('/login')
+
+
 def custom_login():
     error = None
     if request.method == 'POST':
@@ -717,6 +728,12 @@ def _before_request():
         return
 
     authorization = authenticate_request()
+    if authorization is None:
+        # Allow /login to render if not authenticated
+        if request.path == '/login':
+            return
+        # For any other route, redirect to /login
+        return redirect('/login')
     if isinstance(authorization, Response):
         return authorization
     elif not isinstance(authorization, Authorization):
