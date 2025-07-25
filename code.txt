@@ -1,0 +1,11 @@
+python3 -m venv env
+pip install -e .
+pip install -e .[extras]
+pip install "mlflow[auth]"
+source env/bin/activate
+cd mlflow/server/js
+yarn install
+yarn build  
+cd ..//..//..
+export MLFLOW_FLASK_SERVER_SECRET_KEY='mysecret123'
+mlflow ui --app-name basic-auth --host 0.0.0.0
