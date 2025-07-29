@@ -4413,6 +4413,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^4.6.0"
     eslint-plugin-standard: "npm:3.0.1"
     eslint-plugin-testing-library: "npm:^6.1.0"
+    eslint-webpack-plugin: "npm:^5.0.2"
     fast-glob: "npm:^3.2.11"
     file-saver: "npm:^2.0.5"
     font-awesome: "npm:4.7.0"
@@ -8199,6 +8200,16 @@ __metadata:
     "@types/estree": "npm:*"
     "@types/json-schema": "npm:*"
   checksum: 10c0/e4ca426abe9d55f82b69a3250bec78b6d340ad1e567f91c97ecc59d3b2d6a1d8494955ac62ad0ea14b97519db580611c02be8277cbea370bdfb0f96aa2910504
+  languageName: node
+  linkType: hard
+
+"@types/eslint@npm:^9.6.1":
+  version: 9.6.1
+  resolution: "@types/eslint@npm:9.6.1"
+  dependencies:
+    "@types/estree": "npm:*"
+    "@types/json-schema": "npm:*"
+  checksum: 10c0/69ba24fee600d1e4c5abe0df086c1a4d798abf13792d8cfab912d76817fe1a894359a1518557d21237fbaf6eda93c5ab9309143dee4c59ef54336d1b3570420e
   languageName: node
   linkType: hard
 
@@ -16401,6 +16412,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-webpack-plugin@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "eslint-webpack-plugin@npm:5.0.2"
+  dependencies:
+    "@types/eslint": "npm:^9.6.1"
+    flatted: "npm:^3.3.3"
+    jest-worker: "npm:^29.7.0"
+    micromatch: "npm:^4.0.8"
+    normalize-path: "npm:^3.0.0"
+    schema-utils: "npm:^4.3.0"
+  peerDependencies:
+    eslint: ^8.0.0 || ^9.0.0
+    webpack: ^5.0.0
+  checksum: 10c0/29b8ad12ceb0cb8efeccb10d02131042ae95f9c0fdcc612c0cc9c239cb481b677de745f195e789ac0500d5f05bd09d39a36da82299d404c14c68982938a880b1
+  languageName: node
+  linkType: hard
+
 "eslint@npm:^8.25.0, eslint@npm:^8.3.0":
   version: 8.57.1
   resolution: "eslint@npm:8.57.1"
@@ -17250,6 +17278,13 @@ __metadata:
   version: 3.1.1
   resolution: "flatted@npm:3.1.1"
   checksum: 10c0/179b26156c37e529addfb530dd1ea3b9e49888fa7e2ec34bc644e603965db6889d70e1bbc14e2ccae680a0f71bbf7446c396660905a92b436a78f14d011fb349
+  languageName: node
+  linkType: hard
+
+"flatted@npm:^3.3.3":
+  version: 3.3.3
+  resolution: "flatted@npm:3.3.3"
+  checksum: 10c0/e957a1c6b0254aa15b8cce8533e24165abd98fadc98575db082b786b5da1b7d72062b81bfdcd1da2f4d46b6ed93bec2434e62333e9b4261d79ef2e75a10dd538
   languageName: node
   linkType: hard
 
@@ -22015,6 +22050,18 @@ __metadata:
     merge-stream: "npm:^2.0.0"
     supports-color: "npm:^8.0.0"
   checksum: 10c0/d6715268fd6c9fd8431987d42e4ae0981dc6352fd7a5c90aadb9c67562dc6161486a98960f5d1bd36dbafb202d8d98a6fdb181711acbc5e55ee6ab85fa94c931
+  languageName: node
+  linkType: hard
+
+"jest-worker@npm:^29.7.0":
+  version: 29.7.0
+  resolution: "jest-worker@npm:29.7.0"
+  dependencies:
+    "@types/node": "npm:*"
+    jest-util: "npm:^29.7.0"
+    merge-stream: "npm:^2.0.0"
+    supports-color: "npm:^8.0.0"
+  checksum: 10c0/5570a3a005b16f46c131968b8a5b56d291f9bbb85ff4217e31c80bd8a02e7de799e59a54b95ca28d5c302f248b54cbffde2d177c2f0f52ffcee7504c6eabf660
   languageName: node
   linkType: hard
 
