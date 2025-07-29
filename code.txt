@@ -1,7 +1,9 @@
 python3 -m venv env
+source env/bin/activate
 pip install -e .
 pip install -e .[extras]
 pip install "mlflow[auth]"
+pip install psycopg2-binary
 source env/bin/activate
 cd mlflow/server/js
 yarn install
@@ -10,7 +12,14 @@ cd ..//..//..
 export MLFLOW_FLASK_SERVER_SECRET_KEY='mysecret123'
 mlflow ui --app-name basic-auth --host 0.0.0.0
 
-location /assets/ {
-    alias /home/palash/mlflow/variphi-mlflow/mlflow/assets/;
-    autoindex off;
-}
+export MLFLOW_FLASK_SERVER_SECRET_KEY='mysecret123' 
+ 
+
+#python -m mlflow server --app-name basic-auth --backend-store-uri "sqlite:///mlflow.db" --registry-store-uri "sqlite:///mlflow_registry.db" --default-artifact-root ./artifacts --host 0.0.0.0 --port 5000
+
+mlflow server \
+  --backend-store-uri postgresql://mlflowadmin:MlflowSecurePass123@myapp-postgres.c1ksakka2ith.ap-south-1.rds.amazonaws.com:5432/mymlflowdb \
+  --registry-store-uri "postgresql://mlflowadmin:MlflowSecurePass123@myapp-postgres.c1ksakka2ith.ap-south-1.rds.amazonaws.com:5432/mymlflowdb" \
+  --default-artifact-root ~/mlflow-artifacts \
+  --host 0.0.0.0 \
+  --port 5000
